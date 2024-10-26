@@ -21,7 +21,7 @@ const TicTacToe = ()=>{
             setTimeout(() => {
                 SetDisable(false);
                 handleClick(index);
-            }, 1000);
+            }, 400);
             
         }
     } , [tiles])
@@ -75,7 +75,7 @@ const TicTacToe = ()=>{
             <h1 className='text-3xl font-semibold '>Tic Tac Toe</h1>
             <Board  Winner={Winner} handleClick={handleClick} tiles= {tiles} disabled={disabled} XTurn = {XTurn}/>
             <button className='border px-3 py-2' onClick={()=>resetGame()}>Rest Game</button>
-            <button className='border px-3 py-2' onClick={()=>resetGame()}>Play Online</button>
+            <button className='border px-3 py-2' onClick={()=>{resetGame() , SetAIMode(!aiMode)}}>{aiMode?"With Friend":"VS AI"}</button>
         </div>
     )
 }
