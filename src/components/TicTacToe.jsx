@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Board from './Board'
 import { winningPatterns } from '../utils/constans';
 
@@ -7,6 +7,10 @@ const TicTacToe = ()=>{
     const [XTurn , setXTurn] = useState(true);
     const [count , SetCount] = useState(1);
 
+
+    useEffect(()=>{
+        if(count>5) checkWinner();
+    } , [tiles])
 
     const checkWinner = ()=>{
         console.log("Check Winner Called" , count);
@@ -20,10 +24,6 @@ const TicTacToe = ()=>{
                     return;
                     
             }
-            else{
-                console.log("No Winner for ", a , b , c);
-                
-            }
         }
     }
 
@@ -34,12 +34,8 @@ const TicTacToe = ()=>{
         NewTiles[index] = XTurn?"X":"O";
         setTiles(NewTiles);
         SetCount(count+1);
-        console.log(count);
-        
-        checkWinner();
         setXTurn(!XTurn);
 
-        
     }
 
     const resetGame = ()=>{
