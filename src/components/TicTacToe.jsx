@@ -21,7 +21,10 @@ const TicTacToe = ()=>{
            if(tiles[a] && tiles[a] === tiles[b] && tiles[a] === tiles[c])
             {
                     console.log(tiles[a] , "Won !");
-                    return;
+                    // process.exitCode(0)
+                    alert(tiles[a] + " won")
+                    resetGame();
+
                     
             }
         }
@@ -40,7 +43,8 @@ const TicTacToe = ()=>{
 
     const resetGame = ()=>{
         setTiles(Array(9).fill(null));
-        SetCount(0);
+        SetCount(1);
+        
       
     }
 
