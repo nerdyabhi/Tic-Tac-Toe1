@@ -17,6 +17,7 @@ const TicTacToe = ()=>{
     useEffect(()=>{
         if(count>=5) checkWinner(tiles);
         
+        // Check Modes for AI
         if(aiMode && !XTurn ){
             SetDisable(true);
             const index = gameMode=="easy"?EasyMode(tiles):gameMode=="medium"?MediumMode(tiles):AImove(tiles);
@@ -26,6 +27,8 @@ const TicTacToe = ()=>{
             }, 400);
             
         }
+
+
     } , [tiles])
 
     const handleClick = (index)=>{
@@ -70,6 +73,7 @@ const TicTacToe = ()=>{
         <div className='flex flex-col gap-4 items-center justify-center h-[100vh]'>
 
             <h1 className='text-3xl font-semibold '>Tic Tac Toe</h1>
+            { gameMode && aiMode &&  <button className='btn' onClick={()=>setGameMode(null)}>{gameMode.toUpperCase()} <kbd className='kbd kbd-sm'>K</kbd></button>}
             <Board  Winner={Winner} handleClick={handleClick} tiles= {tiles} disabled={disabled} XTurn = {XTurn}/>
             <GamePlayOptions aiMode = {aiMode} SetAIMode={SetAIMode} resetGame={resetGame} gameMode={gameMode} setGameMode={setGameMode} />
             {Winner && <WinScreen Winner={Winner} resetGame={resetGame}/>}
