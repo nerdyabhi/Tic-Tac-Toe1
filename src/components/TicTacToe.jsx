@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react'
 import Board from './Board'
 import {winningPatterns} from '../utils/constans';
-import AImove from '../utils/gameFunctions';
+import {AImove, EasyMode , MediumMode} from '../utils/gameFunctions';
+import GamePlayOptions from './GamePlayOptions';
+import WinScreen from './WinScreen';
 
 const TicTacToe = ()=>{
     const [tiles , setTiles] = useState(Array(9).fill(null));
     const [XTurn , setXTurn] = useState(true);
     const [count , SetCount] = useState(0);
-    const [aiMode , SetAIMode]  = useState(true);
+    const [aiMode , SetAIMode]  = useState(false);
+    const [gameMode , setGameMode] = useState(null);
     const [disabled , SetDisable] = useState(false);
     const [Winner , setWinner] = useState(null);
 
@@ -16,8 +19,7 @@ const TicTacToe = ()=>{
         
         if(aiMode && !XTurn ){
             SetDisable(true);
-            const index = AImove(tiles);
-        
+            const index = gameMode=="easy"?EasyMode(tiles):gameMode=="medium"?MediumMode(tiles):AImove(tiles);
             setTimeout(() => {
                 SetDisable(false);
                 handleClick(index);
@@ -66,16 +68,11 @@ const TicTacToe = ()=>{
 
     return (
         <div className='flex flex-col gap-4 items-center justify-center h-[100vh]'>
-            {Winner && 
-                <div className=" z-10 absolute flex flex-col items-center justify-center bg-gray-900 bg-opacity-95 h-[100vh] w-[100vw] ">
-                    <h1 className='text-white'>{Winner} wins!</h1>
-                    <button className='border px-3 py-2 text-white bg-black' onClick={()=>resetGame()}>New Game</button>
-                </div>
-            }
+
             <h1 className='text-3xl font-semibold '>Tic Tac Toe</h1>
             <Board  Winner={Winner} handleClick={handleClick} tiles= {tiles} disabled={disabled} XTurn = {XTurn}/>
-            <button className='border px-3 py-2' onClick={()=>resetGame()}>Rest Game</button>
-            <button className='border px-3 py-2' onClick={()=>{resetGame() , SetAIMode(!aiMode)}}>{aiMode?"With Friend":"VS AI"}</button>
+            <GamePlayOptions aiMode = {aiMode} SetAIMode={SetAIMode} resetGame={resetGame} gameMode={gameMode} setGameMode={setGameMode} />
+            {Winner && <WinScreen Winner={Winner} resetGame={resetGame}/>}
         </div>
     )
 }
