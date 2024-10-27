@@ -5,7 +5,7 @@ const Tiles = ({ value, onclick, XTurn, Winner, disabled }) => {
     return (
         <button
             onClick={onclick}
-            className="h-[80px] rounded-lg shadow-lg w-[80px] transition-all duration-200 text-center border-2 relative group"
+            className="h-[70px] w-[70px] rounded-lg shadow-md shadow-blue-800   transition-all duration-200 text-center bg-zinc-900 relative group"
         >
             <span className={`value ${btnColor} transition-all duration-200 text-4xl`}>
                 {value}

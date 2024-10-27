@@ -4,6 +4,7 @@ import {winningPatterns} from '../utils/constans';
 import {AImove, EasyMode , MediumMode} from '../utils/gameFunctions';
 import GamePlayOptions from './GamePlayOptions';
 import WinScreen from './WinScreen';
+import Footer from './Footer';
 
 const TicTacToe = ()=>{
     const [tiles , setTiles] = useState(Array(9).fill(null));
@@ -13,6 +14,7 @@ const TicTacToe = ()=>{
     const [gameMode , setGameMode] = useState(null);
     const [disabled , SetDisable] = useState(false);
     const [Winner , setWinner] = useState(null);
+    const [[player1 , player2] , setPlayerName] = useState(["X" , "O"]);
 
     useEffect(()=>{
         if(count>=5) checkWinner(tiles);
@@ -74,9 +76,15 @@ const TicTacToe = ()=>{
 
             <h1 className='text-3xl font-semibold '>Tic Tac Toe</h1>
             { gameMode && aiMode &&  <button className='btn' onClick={()=>setGameMode(null)}>{gameMode.toUpperCase()} <kbd className='kbd kbd-sm'>K</kbd></button>}
+            {!aiMode && <p className='text-white'>Playing with a friend</p>}
+
+
+
             <Board  Winner={Winner} handleClick={handleClick} tiles= {tiles} disabled={disabled} XTurn = {XTurn}/>
             <GamePlayOptions aiMode = {aiMode} SetAIMode={SetAIMode} resetGame={resetGame} gameMode={gameMode} setGameMode={setGameMode} />
             {Winner && <WinScreen Winner={Winner} resetGame={resetGame}/>}
+
+            <Footer/>
         </div>
     )
 }
