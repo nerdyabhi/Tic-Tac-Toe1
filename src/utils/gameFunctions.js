@@ -48,7 +48,7 @@ const minimax = (tiles, depth, isMaximizing) => {
 };
 
 // AI move using Minimax
-const AImove = (tiles) => {
+export const AImove = (tiles) => {
     let bestMove = -1;
     let bestValue = -Infinity;
 
@@ -68,4 +68,29 @@ const AImove = (tiles) => {
     return bestMove;
 };
 
-export default AImove;
+
+
+
+export const EasyMode = (tiles)=>{
+    const indexMap = tiles.map((tile, index) => (tile === null ? index : null)).filter(index=>index)
+    const randomIndex = Math.floor(Math.random()*indexMap.length);
+    return indexMap[randomIndex];
+}
+
+export const MediumMode = (tiles)=>{
+    for(let pattern of winningPatterns){
+        const [a , b , c]  = pattern;
+        if(tiles[a]==="O" && tiles[b] ==="O" && tiles[c] === null) return c;
+        if(tiles[a]==="O" && tiles[c] ==="O" && tiles[b] === null) return b;
+        if(tiles[c]==="O" && tiles[b] ==="O" && tiles[a] === null) return a;
+    }
+
+    for(let pattern of winningPatterns){
+        const [a , b , c]  = pattern;
+        if(tiles[a]==="X" && tiles[b] ==="X" && tiles[c] === null) return c;
+        if(tiles[a]==="X" && tiles[c] ==="X" && tiles[b] === null) return b;
+        if(tiles[c]==="X" && tiles[b] ==="X" && tiles[a] === null) return a;
+    }
+
+    return EasyMode(tiles);
+}
