@@ -14,7 +14,7 @@ const TicTacToe = ()=>{
     const [gameMode , setGameMode] = useState(null);
     const [disabled , SetDisable] = useState(false);
     const [Winner , setWinner] = useState(null);
-    const [[player1 , player2] , setPlayerName] = useState(["X" , "O"]);
+    const [players, setPlayerName] = useState(["X" , "O"]);
 
     useEffect(()=>{
         if(count>=5) checkWinner(tiles);
@@ -70,23 +70,29 @@ const TicTacToe = ()=>{
         setXTurn(true);
     }
 
+    const styleColor = XTurn?"text-red-500":"text-green-500";
 
     return (
         <div className='flex flex-col gap-4 items-center justify-center h-[100vh]'>
-
+            
             <h1 className='text-3xl font-semibold '>Tic Tac Toe</h1>
-            { gameMode && aiMode &&  <button className='btn' onClick={()=>setGameMode(null)}>{gameMode.toUpperCase()} <kbd className='kbd kbd-sm'>K</kbd></button>}
+            <h1 className={`${styleColor} md:text-xl text-lg font-bold`   }>{XTurn?`${players[0]}'s turn`:`${players[1]}'s turn`}</h1>
+
+
             {!aiMode && <p className='text-white'>Playing with a friend</p>}
-
-
+            { gameMode && aiMode &&  <button className='btn' onClick={()=>setGameMode(null)}>{gameMode.toUpperCase()} <kbd className='kbd kbd-sm'>K</kbd></button>}
 
             <Board  Winner={Winner} handleClick={handleClick} tiles= {tiles} disabled={disabled} XTurn = {XTurn}/>
             <GamePlayOptions aiMode = {aiMode} SetAIMode={SetAIMode} resetGame={resetGame} gameMode={gameMode} setGameMode={setGameMode} />
             {Winner && <WinScreen Winner={Winner} resetGame={resetGame}/>}
-
+            <button className="btn w-[225px]" onClick={()=>sendChat()}>Play Online</button>
             <Footer/>
         </div>
+
+
     )
+
+
 }
 
 export default TicTacToe;
