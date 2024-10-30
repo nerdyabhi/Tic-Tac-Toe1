@@ -5,6 +5,7 @@ import {AImove, EasyMode , MediumMode} from '../utils/gameFunctions';
 import GamePlayOptions from './GamePlayOptions';
 import WinScreen from './WinScreen';
 import Footer from './Footer';
+import { Link } from 'react-router-dom';
 
 const TicTacToe = ()=>{
     const [tiles , setTiles] = useState(Array(9).fill(null));
@@ -67,7 +68,7 @@ const TicTacToe = ()=>{
         SetCount(0);
         setWinner(null)
         SetDisable(false);
-        setXTurn(true);
+        // setXTurn((prev)=>!prev);
     }
 
     const styleColor = XTurn?"text-red-500":"text-green-500";
@@ -85,7 +86,7 @@ const TicTacToe = ()=>{
             <Board  Winner={Winner} handleClick={handleClick} tiles= {tiles} disabled={disabled} XTurn = {XTurn}/>
             <GamePlayOptions aiMode = {aiMode} SetAIMode={SetAIMode} resetGame={resetGame} gameMode={gameMode} setGameMode={setGameMode} />
             {Winner && <WinScreen Winner={Winner} resetGame={resetGame}/>}
-            <button className="btn w-[225px]" onClick={()=>sendChat()}>Play Online</button>
+            <button className="btn w-[225px]" ><Link to="/lobby">Play Online</Link></button>
             <Footer/>
         </div>
 
