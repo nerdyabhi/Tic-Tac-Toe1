@@ -23,50 +23,36 @@ const TicTacToe = ()=>{
     const [socket , setSocket] = useState(null);
     const [isPlayOnline, setIsPlayOnline] = useState(false);
     const [opponent , setOpponent] = useState(null);
+    const [opponentLeftTheGame , setOpponentLeftThegame] = useState(false);
+    const[playingAs , setPlayingAs] = useState(null);
+    
+    
+  
+    const handleClick = (index) => {
+        const NewTiles = [...tiles];
+        if (NewTiles[index] || Winner || disabled) return;
+        NewTiles[index] = XTurn ? "X" : "O";
+        setTiles(NewTiles); // Update the state with the new tiles
+        SetCount(count + 1);
+        const nextTurn = !XTurn;
+        setXTurn(nextTurn);
+    
+        // Only emit to server after local update
+        if (isPlayOnline && opponent) {
+            SetDisable(true); // Disable clicking if a move is made
+            console.log("Send this NewTiles to server", NewTiles);
+            socket?.emit("user_made_move_client", { NewTiles, nextTurn });
+        }
+    };
     
 
     const handleKeyDownMove = (e) => {
+
+        if(disabled) return;
         const key= Number(e.key);
         if(key>=1 && key<=9){
             handleClick(key-1);
         }
-    }
-    
-    useEffect(()=>{
-        if(count>=5) checkWinner(tiles);
-        
-        /*** Code That handles VS AI  MODE */
-        if(aiMode && !XTurn ){
-            SetDisable(true);
-            const index = gameMode=="easy"?EasyMode(tiles):gameMode=="medium"?MediumMode(tiles):AImove(tiles);
-            setTimeout(() => {
-                SetDisable(false);
-                handleClick(index);
-            }, 400);
-            
-        }
-
-        if(aiMode){
-            setPlayerName([players[0], "Jarvis"]);
-        }
-
-        /**** Code that Enables on KeyPress Mode ***/
-        window.addEventListener("keydown", handleKeyDownMove);
-
-        return () => {
-            window.removeEventListener("keydown", handleKeyDownMove);
-        };
-
-    } , [tiles])
-
-    const handleClick = (index)=>{
-        const NewTiles = [...tiles ];
-        if(NewTiles[index] || Winner || disabled) return; // if already clicked , then don't do it again 
-        NewTiles[index] = XTurn?"X":"O";
-        setTiles(NewTiles);
-        SetCount(count+1);
-        setXTurn(!XTurn);
-    
     }
 
      const checkWinner = ()=>{ 
@@ -96,10 +82,47 @@ const TicTacToe = ()=>{
     }
 
 
+    /******Use Effect for OnKeyDown Event ******/
+    // useEffect(()=>{
+    //     window.addEventListener("keydown", handleKeyDownMove);
+
+    //     return (()=>{
+    //         window.removeEventListener("keydown", handleKeyDownMove);
+    //     })
+    // } , [tiles]);
+
+
+
+    useEffect(()=>{
+        if(count>=5) checkWinner(tiles);
+        
+        /*** Code That handles VS AI  MODE */
+        if(aiMode && !XTurn ){
+            SetDisable(true);
+            const index = gameMode=="easy"?EasyMode(tiles):gameMode=="medium"?MediumMode(tiles):AImove(tiles);
+            setTimeout(() => {
+                SetDisable(false);
+                handleClick(index);
+            }, 1000);
+            
+        }
+
+        if(aiMode){
+            setPlayerName([players[0], "Jarvis"]);
+        }
+
+        /**** Code that Sends Tiles data to server ***/
+
+
+
+    } , [tiles])
+
+
 
     /**** Play Online Handlers  *****/
 
     const playOnlineHanlder = ()=>{
+        resetGame();
         setIsPlayOnline(true);
         const newSocket = io("http://localhost:5000", {
             autoConnect: true,
@@ -112,11 +135,47 @@ const TicTacToe = ()=>{
           setSocket(newSocket);
     }
 
-    socket?.on("OpponentFound" , (data)=>{
-        console.log("Succesfully Found the opponent" , data);
-        setOpponent(data.opponentName);
-    })
+    useEffect(() => {
+        if (socket) {
+            socket.on("OpponentFound", (data) => {
+                console.log("Succesfully Found the opponent", data);
+                setOpponent(data.opponentName);
+                setPlayingAs(data.playingAs);
+                setXTurn(data.Xturn);
+                if ((data.playingAs === "X" && !data.Xturn) || (data.playingAs === "O" && data.Xturn)) {
+                    SetDisable(true);
+                }
+            });
 
+            socket.on("OpponentLeftTheGame", () => {
+                console.log("Opponent Left the Game");
+                setOpponentLeftThegame(true);
+            });
+
+
+            socket?.on("user_made_move_server" , (data)=>{
+                setXTurn(data.nextTurn);
+                setTiles(data.NewTiles);
+
+                if ((playingAs === "X" && data.nextTurn === true) || (playingAs === "O" && data.nextTurn === false)) {
+                    console.log("Setting disabled to false");
+                    SetDisable(false);
+                }
+                 
+            })
+
+            return () => {
+                socket.off("OpponentFound");
+                socket.off("OpponentLeftTheGame");
+                socket.off("user_made_move_server");
+            };
+        }
+
+
+    }, [socket , playingAs ]);
+
+
+   
 
     /**** Code For WebSockets Ends Here ********/
     const styleColor = XTurn?"text-red-500":"text-green-500";
@@ -126,6 +185,10 @@ const TicTacToe = ()=>{
         return <h1 className='text-center'>Waiting for opponent</h1>
     }
 
+    if(opponent && opponentLeftTheGame ){
+        return <h1>Opponent Left the Game</h1>
+    }
+
     return (
 
         <div className='flex flex-col gap-4 items-center justify-center h-[100vh]'>
@@ -133,7 +196,7 @@ const TicTacToe = ()=>{
             <h1 className='text-3xl font-semibold '>Tic Tac Toe</h1>
             <h1 className={`${styleColor} md:text-xl text-lg font-bold`   }>{XTurn?`${players[0]}'s turn`:`${players[1]}'s turn`}</h1>
 
-
+            {playingAs && <h1>Playing As : {playingAs}</h1>}
             {!isPlayOnline && !aiMode && <p className='text-white'>Playing with a friend</p>}
             {!isPlayOnline &&  gameMode && aiMode &&  <button className='btn' onClick={()=>setGameMode(null)}>{gameMode.toUpperCase()} <kbd className='kbd kbd-sm'>K</kbd></button>}
 
