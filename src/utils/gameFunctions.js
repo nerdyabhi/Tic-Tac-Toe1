@@ -1,4 +1,4 @@
-import { winningPatterns } from "./constans";
+import { winningPatterns } from "./constants";
 
 // Utility to check the winner
 const checkWinner = (tiles) => {
