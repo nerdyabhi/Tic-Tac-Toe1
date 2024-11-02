@@ -9,36 +9,34 @@ const useSocket = (resetGame, setTiles, setXTurn, SetCount, SetDisable, setWinne
   const [playingAs, setPlayingAs] = useState(null);
 
   useEffect(() => {
-    const newSocket = io("http://localhost:5000", { autoConnect: true });
-    setSocket(newSocket);
 
-    newSocket.on("OpponentFound", (data) => {
+    socket?.on("OpponentFound", (data) => {
       setOpponent(data.opponentName);
       setPlayingAs(data.playingAs);
       setXTurn(data.Xturn);
       SetDisable(!(data.playingAs === "X" && data.Xturn));
     });
 
-    newSocket.on("OpponentLeftTheGame", () => setOpponentLeftThegame(true));
+    socket?.on("OpponentLeftTheGame", () => setOpponentLeftThegame(true));
 
-    newSocket.on("user_made_move_server", (data) => {
+    socket?.on("user_made_move_server", (data) => {
       setXTurn(data.nextTurn);
       setTiles(data.NewTiles);
       SetCount(data.count);
       SetDisable(!((playingAs === "X" && data.nextTurn === true) || (playingAs === "O" && data.nextTurn === false)));
     });
 
-    newSocket.on("user_lost_the_match", (winner) => setWinner(`${winner} Won the match..`));
+    socket?.on("user_lost_the_match", (winner) => setWinner(`${winner} Won the match..`));
 
     return () => {
-      newSocket.off("OpponentFound");
-      newSocket.off("OpponentLeftTheGame");
-      newSocket.off("user_made_move_server");
-      newSocket.off("user_lost_the_match");
+      socket?.on("OpponentFound");
+      socket?.on("OpponentLeftTheGame");
+      socket?.on("user_made_move_server");
+      socket?.on("user_lost_the_match");
     };
   }, [playingAs]);
 
-  return { socket, opponent, opponentLeftTheGame, playingAs };
+  return { socket,setSocket ,  opponent, opponentLeftTheGame, playingAs  , setPlayingAs, setOpponent };
 };
 
 export default useSocket;
