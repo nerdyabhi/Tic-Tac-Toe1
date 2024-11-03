@@ -83,7 +83,7 @@ const TicTacToe = ()=>{
             setTimeout(() => {
                 SetDisable(false);
                 handleClick(index);
-            }, 1000);
+            }, 370);
             
         }
 
