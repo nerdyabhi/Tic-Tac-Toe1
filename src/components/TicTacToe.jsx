@@ -9,7 +9,7 @@ import { io } from 'socket.io-client';
 import { nanoid } from 'nanoid';
 import useSocket from '../hooks/useSocket';
 
-// import 'dotenv/config' ;
+import 'dotenv/config';
 
 
 
@@ -102,7 +102,7 @@ const TicTacToe = ()=>{
     const playOnlineHanlder = ()=>{
         resetGame();
         setIsPlayOnline(true);
-        const URL = import.meta.env.VITE_SOCKET_URL;
+        const URL = process.env.URL;
         console.log("Url for the same is : ", URL);
         
         const newSocket = io(URL, {
