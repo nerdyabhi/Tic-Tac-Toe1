@@ -102,7 +102,10 @@ const TicTacToe = ()=>{
     const playOnlineHanlder = ()=>{
         resetGame();
         setIsPlayOnline(true);
-        const newSocket = io(import.meta.env.VITE_SOCKET_URL, {
+        const URL = import.meta.env.VITE_SOCKET_URL;
+        console.log("Url for the same is : ", URL);
+        
+        const newSocket = io(URL, {
             autoConnect: true,
           });
       
