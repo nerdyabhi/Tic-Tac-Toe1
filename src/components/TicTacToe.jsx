@@ -9,7 +9,9 @@ import { io } from 'socket.io-client';
 import { nanoid } from 'nanoid';
 import useSocket from '../hooks/useSocket';
 
-import 'dotenv/config';
+import dotenv from 'dotenv';
+dotenv.config();
+
 
 
 
