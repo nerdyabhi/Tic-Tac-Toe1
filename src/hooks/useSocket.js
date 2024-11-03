@@ -1,8 +1,7 @@
 // hooks/useSocket.js
 import { useState, useEffect } from 'react';
-import { io } from 'socket.io-client';
 
-const useSocket = (resetGame, setTiles, setXTurn, SetCount, SetDisable, setWinner) => {
+const useSocket = (resetGame, tiles , setTiles, setXTurn, SetCount, SetDisable, setWinner) => {
   const [socket, setSocket] = useState(null);
   const [opponent, setOpponent] = useState(null);
   const [opponentLeftTheGame, setOpponentLeftThegame] = useState(false);
@@ -10,33 +9,57 @@ const useSocket = (resetGame, setTiles, setXTurn, SetCount, SetDisable, setWinne
 
   useEffect(() => {
 
-    socket?.on("OpponentFound", (data) => {
-      setOpponent(data.opponentName);
-      setPlayingAs(data.playingAs);
-      setXTurn(data.Xturn);
-      SetDisable(!(data.playingAs === "X" && data.Xturn));
-    });
-
-    socket?.on("OpponentLeftTheGame", () => setOpponentLeftThegame(true));
-
     socket?.on("user_made_move_server", (data) => {
+
       setXTurn(data.nextTurn);
-      setTiles(data.NewTiles);
+      setTiles(data.newTiles);
       SetCount(data.count);
-      SetDisable(!((playingAs === "X" && data.nextTurn === true) || (playingAs === "O" && data.nextTurn === false)));
+      console.log(data.playingAs , data.nextTurn);
+      console.log("Hey , Count got updated to " , data.count);
+      
+      
+      if((playingAs == "X" && !data.nextTurn ) || playingAs ==="O" && data.nextTurn ){
+        SetDisable(true);
+      }
+      else SetDisable(false);
     });
 
     socket?.on("user_lost_the_match", (winner) => setWinner(`${winner} Won the match..`));
 
     return () => {
-      socket?.on("OpponentFound");
-      socket?.on("OpponentLeftTheGame");
-      socket?.on("user_made_move_server");
-      socket?.on("user_lost_the_match");
+      socket?.off("user_made_move_server");
+      socket?.off("user_lost_the_match");
     };
-  }, [playingAs]);
+  }, [playingAs, tiles , socket ]);
 
-  return { socket,setSocket ,  opponent, opponentLeftTheGame, playingAs  , setPlayingAs, setOpponent };
+  useEffect(()=>{
+    socket?.on("OpponentFound", (data) => {
+      console.log("Opponent Found and data is : " , data);
+
+      setOpponent(data.opponentName);
+      setPlayingAs(data.playingAs);
+      setXTurn(data.Xturn);
+
+      if((data.playingAs === "X" && !data.Xturn ) || data.playingAs === "O" && data.Xturn)
+      {
+        console.log(data.playingAs , "and hence disabled the board.");
+        SetDisable(true);
+      }
+    });
+
+    socket?.on("OpponentLeftTheGame", () => setOpponentLeftThegame(true));
+
+    return ()=>{
+      socket?.off("OpponentFound");
+      socket?.off("OpponentLeftTheGame");
+    }
+  }, [socket])
+
+
+  return { socket , setSocket ,  opponent, opponentLeftTheGame, playingAs  , setPlayingAs, setOpponent };
 };
+
+
+
 
 export default useSocket;

@@ -9,7 +9,13 @@ import { io } from 'socket.io-client';
 import { nanoid } from 'nanoid';
 import useSocket from '../hooks/useSocket';
 
+// import 'dotenv/config' ;
+
+
+
+
 const TicTacToe = ()=>{
+
     const [tiles , setTiles] = useState(Array(9).fill(null));
     const [XTurn , setXTurn] = useState(true);
     const [count , SetCount] = useState(0);
@@ -19,32 +25,11 @@ const TicTacToe = ()=>{
     const [Winner , setWinner] = useState(null);
     const [players, setPlayerName] = useState(["Abhi" , "Aitrika"]);
 
-    // /**** States for Online Play  *****/
-    // const [socket , setSocket] = useState(null);
     const [isPlayOnline, setIsPlayOnline] = useState(false);
-    // const [opponent , setOpponent] = useState(null);
-    // const [opponentLeftTheGame , setOpponentLeftThegame] = useState(false);
-    // const[playingAs , setPlayingAs] = useState(null);
+
     
     
-  
-    const handleClick = (index) => {
-        const NewTiles = [...tiles];
-        if (NewTiles[index] || Winner || disabled) return;
-        NewTiles[index] = XTurn ? "X" : "O";
-        setTiles(NewTiles); // Update the state with the new tiles
-        SetCount(count + 1);
-        const nextTurn = !XTurn;
-        setXTurn(nextTurn);
-    
-        // Only emit to server after local update
-        if (isPlayOnline && opponent) {
-            SetDisable(true); // Disable clicking if a move is made
-            console.log("Send this NewTiles to server", NewTiles);
-            socket?.emit("user_made_move_client", { NewTiles, nextTurn, count: count + 1 });
-        }
-    };
-    
+
     const checkWinner = ()=>{ 
 
         for(let pattern of winningPatterns){
@@ -71,25 +56,31 @@ const TicTacToe = ()=>{
         setTiles(Array(9).fill(null));
         SetCount(0);
         setWinner(null)
-        SetDisable(false);
     }
 
-    const onlineResetGame = ()=>{
-        setWinner(null);
-        setXTurn(true);
-        if(isPlayOnline && playingAs === "X") SetDisable(false);
-        else SetDisable(true);
-        
+    const {socket , setSocket,  opponent, opponentLeftTheGame, playingAs }  = useSocket(resetGame,tiles,  setTiles, setXTurn, SetCount, SetDisable, setWinner);
 
-    }
-
-    const {socket , setSocket,   opponent, opponentLeftTheGame, playingAs , setPlayingAs, setOpponent }  = useSocket(resetGame, setTiles, setXTurn, SetCount, SetDisable, setWinner);
+      
+    const handleClick = (index) => {
+        const newTiles = [...tiles];
+        if (newTiles[index] || Winner || disabled) return;
+        newTiles[index] = XTurn ? "X" : "O";
+        setTiles(newTiles);
+        SetCount(count + 1);
+        setXTurn(!XTurn);
+        if (isPlayOnline && opponent) {
+          if (socket) {;
+            socket.emit("user_made_move_client", { newTiles, nextTurn: !XTurn, count: count + 1 });
+            SetDisable(true);
+          }
+        }
+      };
+    
 
 
     useEffect(()=>{
-        if(count>=5) checkWinner(tiles);
-        
         /*** Code That handles VS AI  MODE */
+        if(count>=5) checkWinner();
         if(aiMode && !XTurn ){
             SetDisable(true);
             const index = gameMode=="easy"?EasyMode(tiles):gameMode=="medium"?MediumMode(tiles):AImove(tiles);
@@ -111,7 +102,7 @@ const TicTacToe = ()=>{
     const playOnlineHanlder = ()=>{
         resetGame();
         setIsPlayOnline(true);
-        const newSocket = io("http://localhost:5000", {
+        const newSocket = io(import.meta.env.VITE_SOCKET_URL, {
             autoConnect: true,
           });
       
@@ -121,54 +112,6 @@ const TicTacToe = ()=>{
       
           setSocket(newSocket);
     }
-
-    useEffect(() => {
-        if (socket) {
-            socket.on("OpponentFound", (data) => {
-                console.log("Succesfully Found the opponent", data);
-                setOpponent(data.opponentName);
-                setPlayingAs(data.playingAs);
-                setXTurn(data.Xturn);
-                if ((data.playingAs === "X" && !data.Xturn) || (data.playingAs === "O" && data.Xturn)) {
-                    SetDisable(true);
-                }
-            });
-
-            socket.on("OpponentLeftTheGame", () => {
-                console.log("Opponent Left the Game");
-                setOpponentLeftThegame(true);
-            });
-
-
-            socket?.on("user_made_move_server" , (data)=>{
-                setXTurn(data.nextTurn);
-                setTiles(data.NewTiles);
-                console.log("Set count to " , data.count);
-                SetCount(data.count);
-
-                if ((playingAs === "X" && data.nextTurn === true) || (playingAs === "O" && data.nextTurn === false)) {
-                    console.log("Setting disabled to false");
-                    SetDisable(false);
-                }
-                 
-            })
-
-
-            socket.on("user_lost_the_match" , (playingAs)=>{
-                setWinner(`{playingAs} Won the match..`);
-            })
-
-            return () => {
-                socket.off("OpponentFound");
-                socket.off("OpponentLeftTheGame");
-                socket.off("user_made_move_server");
-                socket.off("user_lose_the_match");
-            };
-        }
-
-
-    }, [socket , playingAs , Winner ]);
-
 
     /**** Code For WebSockets Ends Here ********/
     const styleColor = XTurn?"text-red-500":"text-green-500";
