@@ -127,7 +127,13 @@ const TicTacToe = ()=>{
 
     return (
         <div className='flex flex-col gap-4 items-center justify-center h-[100vh]'>
-            
+            {/* Backgorund*/}
+        <div className="fixed inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0),rgba(0,0,0,))] animate-pulse [animation-duration:4s]" />
+
+            {/* Grid Overlay*/}
+        <div className="fixed inset-0 bg-[linear-gradient(to_right,rgba(59,130,246,0.1)_1px,transparent_1px),linear-gradient(to_bottom,rgba(59,130,246,0.1)_1px,transparent_1px)] bg-[size:50px_50px]" />
+
+        {/* Actual Code */}
             <h1 className='text-3xl font-semibold '>Tic Tac Toe</h1>
             <h1 className={`${styleColor} md:text-xl text-lg font-bold`   }>{XTurn?`${players[0]}'s turn`:`${players[1]}'s turn`}</h1>
 
@@ -141,9 +147,19 @@ const TicTacToe = ()=>{
             {Winner && <WinScreen Winner={Winner} resetGame={resetGame}/>}
             {!isPlayOnline && <button className="btn w-[225px]" onClick={playOnlineHanlder} >Play Online</button>}
             <Footer/>
+             {/* Grid markers */}
+             <div className="fixed top-0 left-0 w-full h-full pointer-events-none opacity-20">
+                    
+                <div className="absolute bottom-[10%] left-[10%] text-3xl text-yellow-500 animate-pulse [animation-delay:-1.5s] rotate-12">O</div>
+                <div className="absolute top-[15%] right-[15%] text-2xl text-red-500 animate-pulse [animation-delay:-2s] -rotate-6">X</div>
+                <div className="absolute bottom-[85%] right-[85%] text-3xl text-green-500 animate-pulse [animation-delay:-2.5s] rotate-45">O</div>
+                <div className="absolute top-[50%] left-[80%] text-6xl text-pink-500 animate-pulse [animation-delay:-3s] -rotate-12">X</div>
+                <div className="absolute top-[50%] right-[80%] text-6xl text-green-500 animate-pulse [animation-delay:-3s] -rotate-12">O</div>
+                <div className="absolute bottom-[75%] right-[0%] text-5xl text-orange-500 animate-pulse [animation-delay:-3.5s] rotate-180">O</div>
+                <div className="absolute top-[90%] left-[50%] text-3xl text-teal-500 animate-pulse [animation-delay:-4s] rotate-90">X</div>
+            </div>
+
         </div>
-
-
     )
 
 
