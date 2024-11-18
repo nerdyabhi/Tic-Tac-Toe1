@@ -145,7 +145,7 @@ const TicTacToe = ()=>{
             <Board  Winner={Winner} handleClick={handleClick} tiles= {tiles} disabled={disabled} XTurn = {XTurn}/>
             {!isPlayOnline && <GamePlayOptions aiMode = {aiMode} SetAIMode={SetAIMode} resetGame={resetGame} gameMode={gameMode} setGameMode={setGameMode} />}
             {Winner && <WinScreen Winner={Winner} resetGame={resetGame}/>}
-            {!isPlayOnline && <button className="btn w-[225px]" onClick={playOnlineHanlder} >Play Online</button>}
+            {!isPlayOnline && <button className="z-10 btn w-[225px]" onClick={playOnlineHanlder} >Play Online</button>}
             <Footer/>
              {/* Grid markers */}
              <div className="fixed top-0 left-0 w-full h-full pointer-events-none opacity-20">
