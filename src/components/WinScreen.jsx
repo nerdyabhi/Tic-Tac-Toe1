@@ -1,57 +1,44 @@
-import { Trophy, RefreshCw, RotateCcw, PartyPopper } from 'lucide-react';
+import React from 'react';
+import { Trophy, RefreshCw, RotateCcw } from 'lucide-react';
 
 const WinningGif = ({ Winner }) => {
     const gifSrc = Winner === "Draw"
         ? "https://nerdyabhi.github.io/tic-tac-toe/asset/memeGameDraw.gif"
-        : Winner ==="X"?"https://nerdyabhi.github.io/tic-tac-toe/asset/memeWin.webp":"https://nerdyabhi.github.io/tic-tac-toe/asset/machineWins.webp";
+        : Winner === "X" ? "https://nerdyabhi.github.io/tic-tac-toe/asset/memeWin.webp" : "https://nerdyabhi.github.io/tic-tac-toe/asset/machineWins.webp";
 
     return (
-        <img 
+        <img
             src={gifSrc}
             alt="Game Result"
-            className="w-64 h-64 mb-6 rounded-lg shadow-lg transition-all duration-300 hover:scale-105"
+            className="md:w-64 md:h-64 w-32 h-32 mb-6  rounded-lg "
         />
     );
 };
 
 const WinScreen = ({ Winner, resetGame }) => {
     return (
-        <div className="z-10 absolute flex flex-col items-center justify-center h-screen w-screen bg-gray-900 bg-opacity-95">
-            <div className="text-center p-8 bg-gray-800 rounded-xl shadow-2xl backdrop-blur-sm border border-gray-700 flex flex-col items-center gap-4 animate-fadeIn"></div>
-                <div className="flex items-center gap-3">
-                    {Winner === "Draw" ? (
-                        <PartyPopper className="w-12 h-12 text-yellow-400 animate-bounce" />
-                    ) : (
-                        <Trophy className="w-12 h-12 text-yellow-400 animate-pulse" />
-                    )}
-                    <h1 className="text-6xl font-extrabold text-white mb-4">
-                        {Winner === "Draw" ? "It's a Draw!" : `${Winner} Wins! 🏆`}
-                    </h1>
-                </div>
+        <div className="flex flex-col  w-[100vw] h-[100vh] justify-center items-center min-h-screen bg-zinc-900 absolute">
+          
+            <div className="relative  flex flex-col items-center text-center space-y-8 p-12 rounded-2xl z-10 bg-slate-900 ">
+            
+                {/* Game result announcement */}
+                <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-400 via-white to-blue-400 bg-clip-text text-transparent tracking-wider">
+                    {Winner === "Draw" ? "It's a Draw!" : `${Winner} Wins!`}
+                </h1>
+
+            
 
                 <WinningGif Winner={Winner} />
-                
-                <p className="text-gray-300 text-xl mb-8 flex items-center gap-2">
-                    Congratulations! What would you like to do next?
-                </p>
-                <div className="flex gap-4 justify-center items-center">
-                    <button
-                        className="px-6 py-3 bg-indigo-600 text-white text-lg font-semibold rounded-lg shadow-lg hover:bg-indigo-700 transition-all transform hover:scale-105 flex items-center gap-2"
-                        onClick={resetGame}
-                    >
-                        <RefreshCw className="w-5 h-5 animate-spin-slow" />
-                        Play Again
-                    </button>
-                    <button
-                        className="px-6 py-3 bg-gray-700 text-white text-lg font-semibold rounded-lg shadow-lg hover:bg-gray-600 transition-all transform hover:scale-105 flex items-center gap-2"
-                        onClick={() => window.location.reload()}
-                    >
-                        <RotateCcw className="w-5 h-5" />
-                        Reset Score
-                    </button>
+
+                {/* Game control buttons */}
+                <div className="flex gap-6 justify-center items-center">
+                <button className="btn w-[225px] border-2 border-white hover:scale-105 transition-all duration-200" onClick={resetGame} >Play Again</button>
+                <button className="btn w-[225px] border-2 border-white hover:scale-105 transition-all duration-200" onClick={resetGame} >Play Again</button>
+                  
                 </div>
             </div>
 
+           </div>
     );
 };
 
