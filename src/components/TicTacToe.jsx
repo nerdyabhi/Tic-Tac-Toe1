@@ -8,6 +8,7 @@ import Footer from './Footer';
 import { io } from 'socket.io-client';
 import { nanoid } from 'nanoid';
 import useSocket from '../hooks/useSocket';
+import WaitingScreen from './WaitingScreen';
 
 
 const TicTacToe = ()=>{
@@ -117,7 +118,7 @@ const TicTacToe = ()=>{
 
 
     if(!opponent && isPlayOnline){
-        return <h1 className='text-center'>Waiting for opponent</h1>
+        return <WaitingScreen/>
     }
 
     if(opponent && opponentLeftTheGame ){
