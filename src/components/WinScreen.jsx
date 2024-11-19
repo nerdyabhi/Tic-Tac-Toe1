@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-
+let [score1 , score2] = [0  , 0];
 const WinningGif = ({ Winner }) => {
     console.log(Winner);
     
@@ -25,7 +25,7 @@ const checkPrevgame = (Winner , setWinner , SetDisable)=>{
 
 
 const WinScreen = ({ Winner, resetGame  , setWinner , SetDisable}) => {
-    let [score1 , score2] = [0  , 0];
+   
 
     const HandleKeyPress = (e)=>{
         if(e.key.toLowerCase() == "g"){
