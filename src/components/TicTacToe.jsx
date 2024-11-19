@@ -11,6 +11,7 @@ import useSocket from '../hooks/useSocket';
 import WaitingScreen from './WaitingScreen';
 
 
+
 const TicTacToe = ()=>{
 
     const [tiles , setTiles] = useState(Array(9).fill(null));
@@ -20,11 +21,9 @@ const TicTacToe = ()=>{
     const [gameMode , setGameMode] = useState(null);
     const [disabled , SetDisable] = useState(false);
     const [Winner , setWinner] = useState(null);
-    const [players, setPlayerName] = useState(["Abhi" , "Aitrika"]);
+    const [players, setPlayerName] = useState(["X" , "O"]);
 
     const [isPlayOnline, setIsPlayOnline] = useState(false);
-
-    
     
 
     const checkWinner = ()=>{ 
@@ -53,6 +52,7 @@ const TicTacToe = ()=>{
         setTiles(Array(9).fill(null));
         SetCount(0);
         setWinner(null)
+        SetDisable(false);
     }
 
     const {socket , setSocket,  opponent, opponentLeftTheGame, playingAs }  = useSocket(resetGame,tiles,  setTiles, setXTurn, SetCount, SetDisable, setWinner);
@@ -139,12 +139,12 @@ const TicTacToe = ()=>{
 
             {playingAs && <h1>Playing As : {playingAs}</h1>}
             {!isPlayOnline && !aiMode && <p className='text-white'>Playing with a friend</p>}
-            {!isPlayOnline &&  gameMode && aiMode &&  <button className='btn' onClick={()=>setGameMode(null)}>{gameMode.toUpperCase()} <kbd className='kbd kbd-sm'>K</kbd></button>}
+            {!isPlayOnline &&  gameMode && aiMode &&  <button className='btn z-10' onClick={()=>setGameMode(null)}>{gameMode.toUpperCase()} <kbd className=' z-10 kbd kbd-sm'>K</kbd></button>}
 
             {isPlayOnline && opponent && <h1>Opponent Found ! {opponent}  playing as </h1>}
             <Board  Winner={Winner} handleClick={handleClick} tiles= {tiles} disabled={disabled} XTurn = {XTurn}/>
             {!isPlayOnline && <GamePlayOptions aiMode = {aiMode} SetAIMode={SetAIMode} resetGame={resetGame} gameMode={gameMode} setGameMode={setGameMode} />}
-            {Winner && <WinScreen Winner={Winner} resetGame={resetGame}/>}
+            {Winner && <WinScreen Winner={Winner } setWinner={setWinner} resetGame={resetGame} SetDisable={SetDisable}/>}
             {!isPlayOnline && <button className="z-10 btn w-[225px]" onClick={playOnlineHanlder} >Play Online</button>}
             <Footer/>
              {/* Grid markers */}
