@@ -34,18 +34,24 @@ const TicTacToe = ()=>{
            if(tiles[a] && tiles[a] === tiles[b] && tiles[a] === tiles[c])
             {
                     console.log(tiles[a] , "Won !");
-                    setWinner(tiles[a]);
-                    return
-            }
-    
-            if(count ===9){
-                setWinner("Game draw.")
-            }
-        }
+                    // process.exitCode(0)
+                    alert(tiles[a] + " won")
+                    resetGame();
 
-        if(Winner && isPlayOnline && playingAs!=null && playingAs != Winner ){
-            setWinner("You lose");
+                    
+            }
         }
+    }
+
+    const handleClick = (index)=>{
+        const NewTiles = [...tiles ];
+        if(NewTiles[index]) return; // if already clicked , then don't do it again 
+
+        NewTiles[index] = XTurn?"X":"O";
+        setTiles(NewTiles);
+        SetCount(count+1);
+        setXTurn(!XTurn);
+
     }
     
     const resetGame = ()=>{
