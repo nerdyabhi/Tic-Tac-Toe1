@@ -17,7 +17,9 @@ const Lobby = () => {
 
   const createARoom = (e) => {
     e.preventDefault();
-    const newRoomId = nanoid(5);
+    // logic
+    console.log("Created a room : ");
+    
   };
 
   return (

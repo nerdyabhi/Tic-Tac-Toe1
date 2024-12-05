@@ -12,7 +12,7 @@ const Tiles = ({ value, onclick, XTurn, Winner, disabled , index }) => {
             </span>
 
             {/* Conditional Rendering */}
-            {(!value && !disabled && !Winner) && (
+            {(!value && !disabled.current && !Winner) && (
                 <span
                     className={`absolute ${placeHolderColor} inset-0 flex items-center justify-center text-4xl text-black/50 opacity-0 group-hover:opacity-50 transition-all duration-200`}
                 >

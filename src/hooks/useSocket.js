@@ -1,7 +1,7 @@
 // hooks/useSocket.js
 import { useState, useEffect } from 'react';
 
-const useSocket = (resetGame, tiles , setTiles, setXTurn, SetCount, SetDisable, setWinner) => {
+const useSocket = (resetGame, tiles , setTiles, setXTurn, SetCount, setWinner , disabled) => {
   const [socket, setSocket] = useState(null);
   const [opponent, setOpponent] = useState(null);
   const [opponentLeftTheGame, setOpponentLeftThegame] = useState(false);
@@ -19,12 +19,10 @@ const useSocket = (resetGame, tiles , setTiles, setXTurn, SetCount, SetDisable, 
       
       
       if((playingAs == "X" && !data.nextTurn ) || playingAs ==="O" && data.nextTurn ){
-        SetDisable(true);
+        disabled.current = true;
       }
-      else SetDisable(false);
+      else disabled.current = false;
     });
-
-    socket?.on("user_lost_the_match", (winner) => setWinner(`${winner} Won the match..`));
 
     return () => {
       socket?.off("user_made_move_server");
@@ -43,7 +41,7 @@ const useSocket = (resetGame, tiles , setTiles, setXTurn, SetCount, SetDisable, 
       if((data.playingAs === "X" && !data.Xturn ) || data.playingAs === "O" && data.Xturn)
       {
         console.log(data.playingAs , "and hence disabled the board.");
-        SetDisable(true);
+        disabled.current = true;
       }
     });
 
