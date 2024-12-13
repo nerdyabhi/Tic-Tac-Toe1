@@ -21,6 +21,7 @@ const TicTacToe = ()=>{
     const disabled = useRef(false);
     const [Winner , setWinner] = useState(null);
     const [players, setPlayerName] = useState(["X" , "O"]);
+    const [gameHistory , setGameHistory] = useState([]);
     const [playersNamePanel, setPlayersNamePanel] = useState(false);
     const Navigate = useNavigate();
         
@@ -29,15 +30,20 @@ const TicTacToe = ()=>{
 
         for(let pattern of winningPatterns){
            const [a , b , c ] = pattern;
+          
     
            if(tiles[a] && tiles[a] === tiles[b] && tiles[a] === tiles[c])
             {
-                    console.log(tiles[a] , "Won !");
+                setGameToLocalStorage();
+                setGameHistory([]);
+                
                     setWinner(tiles[a]);
                     return
             }
     
             if(count ===9){
+                setGameToLocalStorage();
+                setGameHistory([]);
                 setWinner("Game draw.")
             }
         }
@@ -64,6 +70,16 @@ const TicTacToe = ()=>{
         // if(aiMode) SetAIMode(false);
     }
 
+    const setGameToLocalStorage = ()=>{
+        const timeStamp = new Date().toISOString();
+        let entry = JSON.parse(localStorage.getItem('gameHistory'));
+         entry = [...entry , { 
+            time :timeStamp,
+            game : gameHistory,
+        }]
+        localStorage.setItem('gameHistory' , JSON.stringify(entry));
+    }
+
       
     const handleClick = (index) => {
         const newTiles = [...tiles];
@@ -72,6 +88,11 @@ const TicTacToe = ()=>{
         setTiles(newTiles);
         SetCount(count + 1);
         setXTurn(!XTurn);
+
+        setGameHistory([...gameHistory , newTiles])
+
+        console.log(gameHistory);
+        
       };
     
 
