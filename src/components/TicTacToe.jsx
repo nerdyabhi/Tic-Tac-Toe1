@@ -34,7 +34,7 @@ const TicTacToe = ()=>{
     
            if(tiles[a] && tiles[a] === tiles[b] && tiles[a] === tiles[c])
             {
-                setGameToLocalStorage();
+                // setGameToLocalStorage();
                 setGameHistory([]);
                 
                     setWinner(tiles[a]);
@@ -51,7 +51,10 @@ const TicTacToe = ()=>{
     }
 
     const keyHandler = (e)=>{
-        
+        e.preventDefault();
+        if(disabled.current ==true || Winner){
+            console.log("Disabled hai vro.");
+        }
         const key = e.key;
         if(key >=1 && key<=9){
             handleClick(key-1);
@@ -82,6 +85,7 @@ const TicTacToe = ()=>{
 
       
     const handleClick = (index) => {
+        if(Winner || disabled.current ) return;
         const newTiles = [...tiles];
         if (newTiles[index] || Winner || disabled.current) return;
         newTiles[index] = XTurn ? "X" : "O";
