@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react';
-let [score1 , score2] = [0  , 0];
+import React, { useEffect, useRef, useState } from 'react';
 
 const gifs = [
     "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNTZmbmVidHFvaW41MjBhMjgwc2FkNHMxdmhoczkxYW5mM212YTY4bSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/uvzu2xi8P8G4Eui5mT/giphy.gif",
@@ -31,8 +30,9 @@ const checkPrevgame = (Winner , setWinner , SetDisable)=>{
 }
 
 
-const WinScreen = ({ Winner, resetGame  , setWinner , SetDisable}) => {
+const WinScreen = ({ Winner, resetGame  , setWinner , SetDisable , score1 , score2}) => {
    
+
 
     const HandleKeyPress = (e)=>{
         if(e.key.toLowerCase() == "g"){
@@ -45,9 +45,6 @@ const WinScreen = ({ Winner, resetGame  , setWinner , SetDisable}) => {
             resetGame();
         }
     }
-
-    if(Winner == "X") score1++;
-    else if(Winner == "O") score2++;
 
 
     useEffect(()=>{
@@ -64,8 +61,8 @@ const WinScreen = ({ Winner, resetGame  , setWinner , SetDisable}) => {
                   </div>
                   <h1 className='2xl  font-bold font-mono'>Scores : </h1>
                     <div className="mb-2">
-                        <h1 className='text-xl text-red-500 font-bold'>X - {score1}</h1>
-                        <h1 className='text-xl text-green-500 font-bold'>O - {score2}</h1>
+                        <h1 className='text-xl text-red-500 font-bold'>X - {score1.current}</h1>
+                        <h1 className='text-xl text-green-500 font-bold'>O - {score2.current}</h1>
                     </div>
                     <div className="buttons space-y-3">
                     <button className='border px-3 w-[120px ] py-2 btn bg-opacity-0 hover:bg-opacity-0 rounded-xl w-[200px] max-w-[300px] border-slate-500  transition-all duration-200  shadow-md shadow-blue-800 flex justify-center items-center' onClick={()=>resetGame()}>New Game <kbd className="kbd kbd-sm">N</kbd></button>

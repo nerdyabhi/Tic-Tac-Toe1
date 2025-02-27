@@ -24,6 +24,10 @@ const TicTacToe = ()=>{
     const [gameHistory , setGameHistory] = useState([]);
     const [playersNamePanel, setPlayersNamePanel] = useState(false);
     const Navigate = useNavigate();
+    const playersNamePanelRef = useRef(false);
+    const score1 = useRef(0);
+    const score2 = useRef(0);
+
         
 
     const checkWinner = ()=>{ 
@@ -35,15 +39,15 @@ const TicTacToe = ()=>{
            if(tiles[a] && tiles[a] === tiles[b] && tiles[a] === tiles[c])
             {
                 // setGameToLocalStorage();
-                setGameHistory([]);
                 
                     setWinner(tiles[a]);
+                    if(tiles[a] == 'X') score1.current = score1.current + 1;
+                    else score2.current = score2.current + 1;
                     return
             }
     
             if(count ===9){
-                setGameToLocalStorage();
-                setGameHistory([]);
+             
                 setWinner("Game draw.")
             }
         }
@@ -51,6 +55,7 @@ const TicTacToe = ()=>{
     }
 
     const keyHandler = (e)=>{
+        if (playersNamePanelRef.current) return;
         e.preventDefault();
         if(disabled.current ==true || Winner){
             console.log("Disabled hai vro.");
@@ -61,6 +66,7 @@ const TicTacToe = ()=>{
         } 
         if(key.toLowerCase() == 'c'){
             setPlayersNamePanel(true);
+            playersNamePanelRef.current
         }
 
     }
@@ -73,15 +79,7 @@ const TicTacToe = ()=>{
         // if(aiMode) SetAIMode(false);
     }
 
-    const setGameToLocalStorage = ()=>{
-        const timeStamp = new Date().toISOString();
-        let entry = JSON.parse(localStorage.getItem('gameHistory'));
-         entry = [...entry , { 
-            time :timeStamp,
-            game : gameHistory,
-        }]
-        localStorage.setItem('gameHistory' , JSON.stringify(entry));
-    }
+   
 
       
     const handleClick = (index) => {
@@ -150,7 +148,7 @@ const TicTacToe = ()=>{
             {/* { opponent && <h1>Opponent Found ! {opponent}  playing as </h1>} */}
             <Board  Winner={Winner} handleClick={handleClick} tiles= {tiles} disabled={disabled} XTurn = {XTurn}/>
             {<GamePlayOptions aiMode = {aiMode} SetAIMode={SetAIMode} resetGame={resetGame} gameMode={gameMode} setGameMode={setGameMode} />}
-            {Winner && <WinScreen Winner={Winner } setWinner={setWinner} resetGame={resetGame} />}
+            {Winner && <WinScreen Winner={Winner } setWinner={setWinner} resetGame={resetGame} score1={score1} score2={score2} />}
             {<button className="z-10 btn w-[225px]" onClick = {()=> Navigate("/lobby")} >Play Online</button>}
             <Footer/>
              {/* Grid markers */}

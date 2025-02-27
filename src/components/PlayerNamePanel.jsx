@@ -6,9 +6,9 @@ const PlayersNamePanel = ({ players, setPlayerName , setPlayersNamePanel }) => {
     const [player2 , setPlayer2] = useState(players[1]);
 
     const handleSubmit = (e) => {
-        e.preventDefault()
-        setPlayerName([player1|| 'X', player2 || 'O'])
-        setPlayersNamePanel(false)
+        e.preventDefault();
+        setPlayerName([player1 || 'X', player2 || 'O']);
+        setPlayersNamePanel(false);
     }
 
     return (
